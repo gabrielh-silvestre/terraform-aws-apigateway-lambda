@@ -15,8 +15,6 @@ resource "aws_api_gateway_method" "custom_api_method" {
   resource_id   = aws_api_gateway_resource.custom_api_resource.id
   http_method   = "ANY"
   authorization = "NONE"
-
-  # After add cognito authorizer
 }
 
 resource "aws_api_gateway_integration" "custom_api_integration" {
@@ -34,11 +32,12 @@ resource "aws_api_gateway_deployment" "custom_api_deployment" {
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_method_response.method_response.id,
-      aws_api_gateway_integration_response.name.id,
+      aws_api_gateway_integration_response.cors_integration_response.id,
     ]))
   }
 
   depends_on = [
+    aws_api_gateway_integration_response.cors_integration_response,
     aws_api_gateway_integration.custom_api_integration,
     aws_api_gateway_resource.custom_api_resource,
   ]
@@ -52,4 +51,19 @@ resource "aws_api_gateway_stage" "custom_api_stage" {
   rest_api_id   = aws_api_gateway_rest_api.custom_api.id
   stage_name    = var.apigateway.stage_name
   deployment_id = aws_api_gateway_deployment.custom_api_deployment.id
+}
+
+# -------------------------- Enable CORS preflight --------------------------
+resource "aws_api_gateway_method" "cors_method" {
+  rest_api_id   = aws_api_gateway_rest_api.custom_api.id
+  resource_id   = aws_api_gateway_resource.custom_api_resource.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "cors_integration" {
+  rest_api_id = aws_api_gateway_rest_api.custom_api.id
+  resource_id = aws_api_gateway_resource.custom_api_resource.id
+  http_method = aws_api_gateway_method.cors_method.http_method
+  type        = "MOCK"
 }
