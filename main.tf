@@ -10,11 +10,23 @@ resource "aws_api_gateway_resource" "custom_api_resource" {
   path_part   = "{proxy+}"
 }
 
+resource "aws_api_gateway_authorizer" "cognito_authorizer" {
+  name          = "CognitoUserPoolAuthorizer"
+  type          = "COGNITO_USER_POOLS"
+  rest_api_id   = aws_api_gateway_rest_api.custom_api.id
+  provider_arns = local.gtw_authorization_arns
+}
+
 resource "aws_api_gateway_method" "custom_api_method" {
   rest_api_id   = aws_api_gateway_rest_api.custom_api.id
   resource_id   = aws_api_gateway_resource.custom_api_resource.id
   http_method   = "ANY"
-  authorization = "NONE"
+  authorization = local.gtw_authorization
+  authorizer_id = local.gtw_authorizer_id
+
+  request_parameters = {
+    "method.request.path.proxy" = true
+  }
 }
 
 resource "aws_api_gateway_integration" "custom_api_integration" {

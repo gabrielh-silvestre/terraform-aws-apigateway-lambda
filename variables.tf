@@ -26,11 +26,8 @@ variable "lambda" {
     filename    = string
     environment = optional(map(string))
 
-    policies = optional(list(object({
-      name      = string
-      actions   = list(string)
-      resources = list(string)
-    })), [])
+    dynamodb_tables = optional(list(string), [])
+    s3_buckets      = optional(list(string), [])
   })
 
   description = "Configuration for Lambda"
@@ -42,11 +39,7 @@ variable "apigateway" {
     description = optional(string)
     stage_name  = string
 
-    policies = optional(list(object({
-      name      = string
-      actions   = list(string)
-      resources = list(string)
-    })), [])
+    cognito_user_pool_id = optional(list(string), [])
   })
 
   description = "Configuration for API Gateway"
