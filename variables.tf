@@ -38,6 +38,8 @@ variable "apigateway" {
     name        = optional(string, "")
     description = optional(string)
     stage_name  = string
+
+    cognito_user_pool_id = optional(list(string), [])
   })
 
   description = "Configuration for API Gateway"
