@@ -9,12 +9,6 @@ resource "aws_lambda_function" "lambda" {
 }
 
 # -------------------------- policies --------------------------
-resource "aws_lambda_permission" "log_permission" {
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda.function_name
-  principal     = "logs.${var.region}.amazonaws.com"
-}
-
 resource "aws_lambda_permission" "apigw_lambda" {
   function_name = aws_lambda_function.lambda.function_name
   statement_id  = "AllowExecutionFromAPIGateway"
@@ -22,20 +16,16 @@ resource "aws_lambda_permission" "apigw_lambda" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "arn:aws:execute-api:${var.region}:${var.account_id}:${aws_api_gateway_rest_api.custom_api.id}/*/*"
-  depends_on = [aws_api_gateway_rest_api.custom_api, aws_api_gateway_resource.custom_api_resource]
+
+  depends_on = [
+    aws_api_gateway_rest_api.custom_api,
+    aws_api_gateway_resource.custom_api_resource
+  ]
 }
 
 # -------------------------- logging --------------------------
 resource "aws_cloudwatch_log_group" "default" {
   name = "/lambda/${var.lambda.name}__lambda"
-}
-
-resource "aws_cloudwatch_log_subscription_filter" "logging" {
-  depends_on      = [aws_lambda_permission.log_permission]
-  destination_arn = aws_lambda_function.lambda.arn
-  filter_pattern  = ""
-  log_group_name  = aws_cloudwatch_log_group.default.name
-  name            = "logging_default"
 }
 
 # -------------------------- file --------------------------
