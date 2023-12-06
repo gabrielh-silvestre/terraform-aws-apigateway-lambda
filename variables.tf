@@ -26,8 +26,8 @@ variable "lambda" {
     filename    = string
     environment = optional(map(string))
 
-    dynamodb_table = optional(list(string), [])
-    s3_bucket      = optional(list(string), [])
+    dynamodb_tables = optional(list(string), [])
+    s3_buckets      = optional(list(string), [])
   })
 
   description = "Configuration for Lambda"
