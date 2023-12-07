@@ -6,13 +6,18 @@ variable "account_id" {
 variable "region" {
   description = "AWS Region"
   type        = string
-  default     = "us-east-1"
 }
 
 variable "default_tags" {
   description = "A map of tags to assign to all resources."
   type        = map(string)
   default     = {}
+}
+
+variable "resource_prefix" {
+  description = "Prefix for all resources"
+  type        = string
+  default     = null
 }
 
 variable "lambda" {
@@ -35,11 +40,12 @@ variable "lambda" {
 
 variable "apigateway" {
   type = object({
-    name        = optional(string, "")
+    name        = string
+    create_api  = optional(bool, true)
     description = optional(string)
     stage_name  = string
 
-    cognito_user_pool_id = optional(list(string), [])
+    cognito_user_pool_name = optional(string, null)
   })
 
   description = "Configuration for API Gateway"

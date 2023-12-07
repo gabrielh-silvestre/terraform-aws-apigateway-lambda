@@ -8,12 +8,22 @@ provider "aws" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 module "api-gateway-with-lambda" {
   source = "../"
 
-  account_id = "413317021779"
+  account_id = data.aws_caller_identity.current.account_id
+	region = data.aws_region.current.name
 
+	default_tags = {
+		"Project" = "terraform-aws-lambda-apigateway"
+	}
+
+	resource_prefix = "prefix"
   apigateway = {
+		name = "lambda_integration"
     stage_name = "dev"
   }
 
@@ -22,5 +32,6 @@ module "api-gateway-with-lambda" {
     runtime = "nodejs16.x"
     handler = "lambda.handler"
     filename = "lambda.js"
+		dynamodb_tables = ["table01", "table02"]
   }
 }
