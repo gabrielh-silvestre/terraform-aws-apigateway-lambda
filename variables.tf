@@ -17,7 +17,9 @@ variable "default_tags" {
 
 variable "lambda" {
   type = object({
-    name        = string
+    invoke_arn = optional(string)
+
+    name        = optional(string, "")
     description = optional(string)
     memory_size = optional(number)
     timeout     = optional(number)

@@ -45,3 +45,5 @@ terraform.rc
 .history/
 
 **/*.zip
+
+**/node_modules/*

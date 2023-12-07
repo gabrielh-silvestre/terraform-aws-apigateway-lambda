@@ -35,7 +35,7 @@ resource "aws_api_gateway_integration" "custom_api_integration" {
   http_method             = aws_api_gateway_method.custom_api_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.lambda.invoke_arn
+  uri                     = var.lambda.invoke_arn != null ? var.lambda.invoke_arn : aws_lambda_function[count.index].lambda.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "custom_api_deployment" {
