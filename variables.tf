@@ -46,6 +46,11 @@ variable "apigateway" {
     stage_name  = string
 
     cognito_user_pool_name = optional(string, null)
+
+    network = optional(object({
+      security_group_ids = list(string)
+      subnet_ids         = list(string)
+    }), null)
   })
 
   description = "Configuration for API Gateway"

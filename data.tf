@@ -34,6 +34,12 @@ data "aws_iam_policy_document" "lambda_policy" {
     resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/lambda/${local.function_name}:*"]
   }
 
+  statement {
+    effect    = "Allow"
+    actions   = ["ec2:CreateNetworkInterface", "ec2:DescribeNetworkInterfaces", "ec2:DeleteNetworkInterface"]
+    resources = ["*"]
+  }
+
   dynamic "statement" {
     for_each = var.apigateway.cognito_user_pool_name != null ? ["cognito"] : []
     content {
