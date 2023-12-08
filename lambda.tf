@@ -8,8 +8,8 @@ resource "aws_lambda_function" "function" {
   s3_key    = aws_s3_object.lambda_s3_object.id
 
   vpc_config {
-    subnet_ids         = var.apigateway.network.subnet_ids
-    security_group_ids = var.apigateway.network.security_group_ids
+    subnet_ids         = local.subnet_ids
+    security_group_ids = local.security_group_ids
   }
 }
 

@@ -82,3 +82,17 @@ data "aws_iam_policy_document" "lambda_policy" {
     }
   }
 }
+
+data "aws_security_groups" "functions" {
+  filter {
+    name   = "tag:${var.lambda.network.security_groups_tag.key}"
+    values = var.lambda.network.security_groups_tag.values
+  }
+}
+
+data "aws_subnets" "functions" {
+  filter {
+    name   = "tag:${var.lambda.network.subnets_tag.key}"
+    values = var.lambda.network.subnets_tag.values
+  }
+}
