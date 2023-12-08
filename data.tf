@@ -1,6 +1,6 @@
 data "aws_api_gateway_rest_api" "custom_api_data" {
-  count = var.apigateway.create_api ? 0 : 1
-  name  = local.api_gateway_name
+  for_each = var.apigateway.create_api != true ? local.apigateway_resource : []
+  name     = each.key
 }
 
 data "aws_cognito_user_pools" "selected" {

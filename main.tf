@@ -1,8 +1,8 @@
 # -------------------------- gateway --------------------------
 resource "aws_api_gateway_rest_api" "custom_api" {
-  count = var.apigateway.create_api ? 1 : 0
+  for_each = local.apigateway_resource
 
-  name        = local.api_gateway_name
+  name        = each.key
   description = var.apigateway.description
 
   tags = var.default_tags
