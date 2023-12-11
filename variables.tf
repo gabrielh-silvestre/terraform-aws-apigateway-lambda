@@ -20,6 +20,30 @@ variable "resource_prefix" {
   default     = null
 }
 
+variable "vpc_cidr_block" {
+  description = "CIDR block of the VPC"
+  type        = string
+  default     = null
+}
+
+variable "public_subnet_cidr_blocks" {
+  description = "CIDR blocks of the public subnets"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_cidr_blocks" {
+  description = "CIDR blocks of the private subnets"
+  type        = list(string)
+  default     = []
+}
+
+variable "security_group_name" {
+  description = "Name of the security group"
+  type        = string
+  default     = null
+}
+
 variable "lambda" {
   type = object({
     name        = string
@@ -33,6 +57,17 @@ variable "lambda" {
 
     dynamodb_tables = optional(list(string), [])
     s3_buckets      = optional(list(string), [])
+
+    network = optional(object({
+      security_groups_tag = object({
+        key    = string
+        values = list(string)
+      })
+      subnets_tag = object({
+        key    = string
+        values = list(string)
+      })
+    }), null)
   })
 
   description = "Configuration for Lambda"

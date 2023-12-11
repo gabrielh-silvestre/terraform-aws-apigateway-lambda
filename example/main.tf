@@ -15,23 +15,40 @@ module "api-gateway-with-lambda" {
   source = "../"
 
   account_id = data.aws_caller_identity.current.account_id
-	region = data.aws_region.current.name
+  region     = data.aws_region.current.name
 
-	default_tags = {
-		"Project" = "terraform-aws-lambda-apigateway"
-	}
+  # --------- Only if you want to create a new VPC ---------
+  # vpc_cidr_block             = "10.0.0.0/16"
+  # public_subnet_cidr_blocks  = ["10.0.1.0/24", "10.0.2.0/24"]
+  # private_subnet_cidr_blocks = ["10.0.4.0/24", "10.0.5.0/24"]
+  # security_group_name        = "example-security-group"
 
-	resource_prefix = "prefix"
+  default_tags = {
+    "Project" = "terraform-aws-lambda-apigateway"
+  }
+
+  resource_prefix = "prefix"
   apigateway = {
-		name = "lambda_integration"
-    stage_name = "dev"
+    name       = "example_integration"
+    stage_name = "test"
   }
 
   lambda = {
-    name    = "example"
-    runtime = "nodejs16.x"
-    handler = "lambda.handler"
-    filename = "lambda.js"
-		dynamodb_tables = ["table01", "table02"]
+    name            = "trem"
+    runtime         = "nodejs16.x"
+    handler         = "lambda.handler"
+    filename        = "lambda.js"
+    dynamodb_tables = ["table1", "table2"]
+
+    network = {
+      security_groups_tag = {
+        key    = "ExampleKey"
+        values = ["Value1", "Value2"]
+      }
+      subnets_tag = {
+        key    = "ExampleKey"
+        values = ["Value1", "Value2"]
+      }
+    }
   }
 }

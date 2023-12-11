@@ -34,6 +34,12 @@ data "aws_iam_policy_document" "lambda_policy" {
     resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/lambda/${local.function_name}:*"]
   }
 
+  statement {
+    effect    = "Allow"
+    actions   = ["ec2:CreateNetworkInterface", "ec2:DescribeNetworkInterfaces", "ec2:DeleteNetworkInterface"]
+    resources = ["*"]
+  }
+
   dynamic "statement" {
     for_each = var.apigateway.cognito_user_pool_name != null ? ["cognito"] : []
     content {
@@ -74,5 +80,19 @@ data "aws_iam_policy_document" "lambda_policy" {
         for bucket in var.lambda.s3_buckets : "arn:aws:s3:::${bucket}/*"
       ]
     }
+  }
+}
+
+data "aws_security_groups" "functions" {
+  filter {
+    name   = "tag:${var.lambda.network.security_groups_tag.key}"
+    values = var.lambda.network.security_groups_tag.values
+  }
+}
+
+data "aws_subnets" "functions" {
+  filter {
+    name   = "tag:${var.lambda.network.subnets_tag.key}"
+    values = var.lambda.network.subnets_tag.values
   }
 }
