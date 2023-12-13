@@ -11,6 +11,11 @@ resource "aws_lambda_function" "function" {
     subnet_ids         = local.subnet_ids
     security_group_ids = local.security_group_ids
   }
+
+  tags = var.default_tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "aws_lambda_permission" "apigw" {

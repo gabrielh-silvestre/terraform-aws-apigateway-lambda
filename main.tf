@@ -65,6 +65,11 @@ resource "aws_api_gateway_stage" "custom_api_stage" {
   rest_api_id   = local.rest_api.id
   stage_name    = var.apigateway.stage_name
   deployment_id = aws_api_gateway_deployment.custom_api_deployment.id
+
+  tags = var.default_tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "aws_api_gateway_deployment" "custom_api_deployment" {
