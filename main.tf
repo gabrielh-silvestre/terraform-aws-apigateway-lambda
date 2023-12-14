@@ -21,7 +21,7 @@ resource "aws_api_gateway_resource" "custom_api_resource" {
 resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   for_each = toset(local.cognito_user_pool)
 
-  name          = "${var.apigateway.cognito_user_pool_name}__cognito_authorizer"
+  name          = var.apigateway.cognito_user_pool_name
   type          = "COGNITO_USER_POOLS"
   rest_api_id   = local.rest_api.id
   provider_arns = data.aws_cognito_user_pools.selected[each.key].arns
