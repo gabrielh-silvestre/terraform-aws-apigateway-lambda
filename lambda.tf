@@ -29,8 +29,10 @@ resource "aws_lambda_permission" "apigw" {
 
 # -------------------------- file --------------------------
 resource "null_resource" "build_lambda" {
+  for_each = toset(var.lambda.root_dir != null ? ["zip"] : [])
+
   triggers = {
-    always_run = timestamp()
+    version_change = var.lambda.version
   }
 
   provisioner "local-exec" {
@@ -38,7 +40,7 @@ resource "null_resource" "build_lambda" {
   }
 
   provisioner "local-exec" {
-    command = "cd ${var.lambda.output_dir} && zip -r ${local.function_name}__${var.version}.zip ."
+    command = "cd ${var.lambda.output_dir} && zip -r ${local.function_name}__${var.lambda.version}.zip ."
   }
 
   lifecycle {
@@ -46,8 +48,10 @@ resource "null_resource" "build_lambda" {
   }
 }
 
-# data "archive_file" "lambda" {
-#   type        = "zip"
-#   source_dir  = var.lambda.filename
-#   output_path = "${local.function_name}__${var.version}.zip"
-# }
+data "archive_file" "lambda" {
+  for_each = toset(var.lambda.filename != null ? ["zip"] : [])
+
+  type        = "zip"
+  source_file = var.lambda.filename
+  output_path = "${var.lambda.output_dir}/${local.function_name}__${var.lambda.version}.zip"
+}

@@ -44,21 +44,17 @@ variable "security_group_name" {
   default     = null
 }
 
-variable "version" {
-  description = "Version of the Lambda function"
-  type        = string
-  default     = null
-}
-
 variable "lambda" {
   type = object({
     name        = string
+    version     = string
     description = optional(string)
     memory_size = optional(number)
     timeout     = optional(number)
     runtime     = string
     handler     = string
-    root_dir    = string
+    filename    = optional(string)
+    root_dir    = optional(string)
     output_dir  = string
     environment = optional(map(string))
 

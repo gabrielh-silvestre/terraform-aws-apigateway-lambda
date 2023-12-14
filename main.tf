@@ -72,6 +72,18 @@ resource "aws_api_gateway_stage" "custom_api_stage" {
   }
 }
 
+resource "aws_api_gateway_method_settings" "path_specific" {
+  rest_api_id = local.rest_api.id
+  stage_name  = aws_api_gateway_stage.custom_api_stage.stage_name
+  method_path = "*/*"
+
+  settings {
+    logging_level      = "INFO"
+    metrics_enabled    = true
+    data_trace_enabled = false
+  }
+}
+
 resource "aws_api_gateway_deployment" "custom_api_deployment" {
   rest_api_id = local.rest_api.id
 

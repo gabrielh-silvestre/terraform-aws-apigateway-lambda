@@ -13,7 +13,15 @@ data "aws_dynamodb_table" "table_name" {
   name     = each.key
 }
 
+data "aws_iam_policy_document" "gateway_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["logs:*"]
+    resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/api-gateway/${local.api_gateway_name}:*"]
+  }
+}
 
+# -------------------------- lambda --------------------------
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"

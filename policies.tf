@@ -21,8 +21,17 @@ resource "aws_iam_role" "gateway_role" {
   }
 }
 
+resource "aws_iam_policy" "gateway_permissions" {
+  name        = var.apigateway.name
+  policy      = data.aws_iam_policy_document.gateway_policy.json
 
+  tags = var.default_tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
 
+# -------------------------- lambda --------------------------
 resource "aws_iam_role" "lambda_role" {
   name               = "${local.function_name}__lambda_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
