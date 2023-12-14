@@ -44,6 +44,12 @@ variable "security_group_name" {
   default     = null
 }
 
+variable "version" {
+  description = "Version of the Lambda function"
+  type        = string
+  default     = null
+}
+
 variable "lambda" {
   type = object({
     name        = string
@@ -52,7 +58,8 @@ variable "lambda" {
     timeout     = optional(number)
     runtime     = string
     handler     = string
-    filename    = string
+    root_dir    = string
+    output_dir  = string
     environment = optional(map(string))
 
     dynamodb_tables = optional(list(string), [])

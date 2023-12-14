@@ -9,8 +9,8 @@ resource "aws_s3_bucket" "lambda_s3" {
 
 resource "aws_s3_object" "lambda_s3_object" {
   bucket = aws_s3_bucket.lambda_s3.id
-  key    = "${var.lambda.name}__lambda.zip"
-  source = data.archive_file.lambda.output_path
+  key    = "${var.lambda.name}__${var.version}.zip"
+  source = "${var.lambda.output_dir}/${local.function_name}__${var.version}.zip"
 
   tags = var.default_tags
   lifecycle {

@@ -28,8 +28,26 @@ resource "aws_lambda_permission" "apigw" {
 }
 
 # -------------------------- file --------------------------
-data "archive_file" "lambda" {
-  type        = "zip"
-  source_file = var.lambda.filename
-  output_path = "${local.function_name}__lambda.zip"
+resource "null_resource" "build_lambda" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "cp ${var.lambda.root_dir}package.json ${var.lambda.root_dir}package-lock.json ${var.lambda.output_dir} && npm install --omit=dev"
+  }
+
+  provisioner "local-exec" {
+    command = "cd ${var.lambda.output_dir} && zip -r ${local.function_name}__${var.version}.zip ."
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
+
+# data "archive_file" "lambda" {
+#   type        = "zip"
+#   source_dir  = var.lambda.filename
+#   output_path = "${local.function_name}__${var.version}.zip"
+# }
