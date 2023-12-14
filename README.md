@@ -1,4 +1,4 @@
-# Terraform Event Bridge Partners
+# Terraform API Gateway with Lambda
 
 Terraform module to create an API Gateway with Lambda integration. Like the Serverless framework, but with Terraform.
 
