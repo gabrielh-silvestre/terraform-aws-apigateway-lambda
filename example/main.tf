@@ -35,9 +35,11 @@ module "api-gateway-with-lambda" {
 
   lambda = {
     name            = "trem"
+    version         = "0.0.0"
     runtime         = "nodejs16.x"
     handler         = "lambda.handler"
     filename        = "lambda.js"
+    output_dir      = "./dist"
     dynamodb_tables = ["table1", "table2"]
 
     network = {
