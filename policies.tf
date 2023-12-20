@@ -22,8 +22,8 @@ resource "aws_iam_role" "gateway_role" {
 }
 
 resource "aws_iam_policy" "gateway_permissions" {
-  name        = var.apigateway.name
-  policy      = data.aws_iam_policy_document.gateway_policy.json
+  name   = local.api_gateway_name
+  policy = data.aws_iam_policy_document.gateway_policy.json
 
   tags = var.default_tags
   lifecycle {
