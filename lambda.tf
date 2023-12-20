@@ -36,11 +36,11 @@ resource "null_resource" "build_lambda" {
   }
 
   provisioner "local-exec" {
-    command = "cp ${var.lambda.root_dir}package.json ${var.lambda.root_dir}package-lock.json ${var.lambda.output_dir} && npm install --omit=dev"
+    command = "cp ${var.lambda.root_dir}package.json ${var.lambda.root_dir}package-lock.json ${var.lambda.output_dir}"
   }
 
   provisioner "local-exec" {
-    command = "cd ${var.lambda.output_dir} && zip -r ${local.function_name}__${var.lambda.version}.zip ."
+    command = "cd ${var.lambda.output_dir} && npm install --omit=dev && zip -r ${local.function_name}__${var.lambda.version}.zip ."
   }
 
   lifecycle {
